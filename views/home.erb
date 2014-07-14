@@ -1,3 +1,13 @@
+<%= flash[:notice] %>
+
 <form method="get" action="/register">
   <button type="submit" class="button" name="register">Register</button>
+</form>
+
+<form method="post" action="/">
+  <lable for="username">Username:</lable>
+  <input type="text" name="username" placeholder="unsername"/>
+  <lable for="password">Password:</lable>
+  <input type="password" name="password" placeholder="password"/>
+  <button type="submit">Login</button>
 </form>
