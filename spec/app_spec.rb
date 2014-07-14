@@ -15,5 +15,6 @@ require 'spec_helper'
 
       expect(page).to have_content("Username:")
       expect(page).to have_content("Password:")
+      expect(page).to have_button("Submit")
       end
     end
