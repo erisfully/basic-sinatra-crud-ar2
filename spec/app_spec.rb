@@ -29,6 +29,7 @@ require 'spec_helper'
 
       visit "/"
 
+
       expect(page).to_not have_content("Thank you for registering!")
 
       visit "/"
@@ -38,12 +39,83 @@ require 'spec_helper'
 
       click_button("Login")
 
-      save_and_open_page
-
       expect(page).to have_content("Welcome, Ash!")
 
       expect(page).to_not have_button("Register", "Login")
       expect(page).to have_button("Logout")
 
+      click_button("Logout")
+
+      expect(page).to have_button("Register", "Login")
+      expect(page).to_not have_content("Welcome, Ash!")
+
     end
   end
+
+    feature "registration check" do
+      it "makese sure the username is unique and that a password is provided" do
+
+        visit "/register"
+
+        fill_in("username", :with => "Ash")
+        fill_in("password", :with => "123")
+
+        click_button("Submit")
+
+        visit "/register"
+
+        fill_in("username", :with => "Ash")
+        fill_in("password", :with => "123")
+
+        click_button("Submit")
+
+        expect(page).to have_content("That username already exists")
+
+        fill_in("username", :with => "Gabe")
+
+        click_button("Submit")
+
+        expect(page).to have_content("Password required")
+
+        fill_in("password", :with => "123")
+        click_button("Submit")
+
+        expect(page).to have_content("Username required")
+
+      end
+    end
+
+    feature "other users" do
+      it "shows a litle of other users on user homepage" do
+
+        visit "/register"
+
+        fill_in("username", :with => "Ash")
+        fill_in("password", :with => "123")
+
+        click_button("Submit")
+
+        visit "/register"
+
+        fill_in("username", :with => "Ian")
+        fill_in("password", :with => "123")
+
+        click_button("Submit")
+
+        visit "/register"
+
+        fill_in("username", :with => "Gabe")
+        fill_in("password", :with => "123")
+
+        click_button("Submit")
+
+        visit "/"
+
+        fill_in("username", :with => "Ash")
+        fill_in("password", :with => "123")
+
+        click_button("Login")
+        save_and_open_page
+        expect(page).to have_content("Gabe", "Ian")
+      end
+    end

@@ -1,4 +1,12 @@
 <h1>Welcome, <%= current_user %>!</h1>
+
+<p>Users:</p>
+<ul>
+  <% user_list.each do |user| %>
+  <li><%= user["username"] %></li>
+      <%end%>
+</ul>
+
 <form method="get" action="/logout">
   <button type="submit">Logout</button>
 </form>
