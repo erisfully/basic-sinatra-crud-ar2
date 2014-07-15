@@ -14,23 +14,28 @@ class App < Sinatra::Application
   end
 
   get "/" do
-    if session[:id]
-      current_user = @database_connection.sql("SELECT username FROM users WHERE id = #{session[:id]}")[0]["username"]
-      user_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{current_user}'")
-      erb :loggedin, :locals => {:current_user => current_user, :user_list => user_list}
-    else
-      erb :home
-    end
+      if session[:id]
+        current_user = @database_connection.sql("SELECT username FROM users WHERE id = #{session[:id]}")[0]["username"]
+        if params[:sort]
+          user_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{current_user}' ORDER BY username ASC")
+        else
+          user_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{current_user}'")
+        end
+        erb :loggedin, :locals => {:current_user => current_user, :user_list => user_list}
+      else
+       erb :home
+      end
+  end
+
+  post "/" do
+    # check_password(params[:password])
+    id = @database_connection.sql("SELECT id FROM users WHERE username = '#{params[:username]}'").last["id"]
+    session[:id] = id
+    redirect "/"
   end
 
   get "/logout" do
     session.delete(:id)
-    redirect "/"
-  end
-
-  post "/" do
-    id = @database_connection.sql("SELECT id FROM users WHERE username = '#{params[:username]}'").last["id"]
-    session[:id] = id
     redirect "/"
   end
 
@@ -69,4 +74,14 @@ class App < Sinatra::Application
   def user_exists (username)
     @database_connection.sql("SELECT username FROM users WHERE username = '#{username}'")
   end
+
+  # def check_password(password)
+  #   if @database_connection.sql("SELECT password FROM users WHERE password = '#{password}'") == []
+  #     flash[:notice] = "Incorrect password"
+  #     redirect"/"
+  #   else
+  #     redirect"/"
+  #   end
+  # end
+
 end

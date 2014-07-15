@@ -40,7 +40,6 @@ require 'spec_helper'
       click_button("Login")
 
       expect(page).to have_content("Welcome, Ash!")
-
       expect(page).to_not have_button("Register", "Login")
       expect(page).to have_button("Logout")
 
@@ -85,8 +84,26 @@ require 'spec_helper'
       end
     end
 
+    # feature "check password" do
+    #   it "checks to make sure the user enters the correct password" do
+    #     visit "/register"
+    #
+    #     fill_in("username", :with => "Ash")
+    #     fill_in("password", :with => "123")
+    #
+    #     click_button("Submit")
+    #
+    #     visit "/"
+    #
+    #     fill_in("username", :with => "Ash")
+    #     fill_in("password", :with => "wrong")
+    #     save_and_open_page
+    #     expect(page).to have_content("Incorrect password")
+    #   end
+    # end
+
     feature "other users" do
-      it "shows a litle of other users on user homepage" do
+      it "shows a list of other users on user homepage" do
 
         visit "/register"
 
@@ -116,6 +133,11 @@ require 'spec_helper'
 
         click_button("Login")
         save_and_open_page
-        expect(page).to have_content("Gabe", "Ian")
+        expect(page).to have_content("Ian Gabe")
+
+        click_button("Sort")
+        save_and_open_page
+        expect(page).to have_content("Gabe Ian")
       end
     end
+
